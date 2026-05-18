@@ -1,1 +1,20 @@
-/hs_err_pid5796.log
+# /hs_err_pid5796.log
+
+# Maven
+target/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java compiled files
+*.class
+
+# SQL file
+shoestore.sql
