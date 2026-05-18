@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Purchase History - Solely Shoes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f0f2f5;
+            color: #0A1128;
+            padding-top: 100px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 1300px;
+            z-index: 1050;
+            background-color: rgba(0, 0, 0, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.8rem 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 2px;
+            left: 1rem;
+            background-color: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: calc(100% - 2rem);
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+        }
+
+        .user-greet {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .btn-cart {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cart:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .btn-dark-premium {
+            background-color: #fff !important;
+            color: #0A1128 !important;
+            border-radius: 30px;
+            padding: 10px 28px;
+            font-weight: 600;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-dark-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
+
+        .btn-outline-dark-premium {
+            color: #fff !important;
+            border-color: rgba(255,255,255,0.5) !important;
+            border-radius: 30px;
+            font-weight: 600;
+            padding: 10px 28px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-dark-premium:hover {
+            background-color: #fff !important;
+            color: #0A1128 !important;
+        }
+        
+        .btn-outline-danger {
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-color: rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.8);
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #fff;
+        }
+
+        .history-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .order-card {
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .order-header {
+            background-color: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .info-block span {
+            display: block;
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .info-block strong {
+            color: #0A1128;
+        }
+
+        .order-status {
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .status-delivered { background-color: #e6f4ea; color: #1e8e3e; }
+        .status-shipped { background-color: #e8f0fe; color: #1a73e8; }
+        .status-placed { background-color: #fef7e0; color: #f29900; }
+        .status-cancelled { background-color: #fce8e6; color: #d93025; }
+
+        .order-body {
+            padding: 1.5rem;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .btn-rate {
+            background-color: #fff;
+            border: 1px solid #0A1128;
+            color: #0A1128;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-rate:hover {
+            background-color: #0A1128;
+            color: #fff;
+        }
+        
+        .reviewed-badge {
+            color: #f29900;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Star Rating Form Styles */
+        .rating-stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .rating-stars input {
+            display: none;
+        }
+
+        .rating-stars label {
+            cursor: pointer;
+            font-size: 2rem;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .rating-stars input:checked ~ label,
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: #ffc107;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <nav class="navbar navbar-expand-lg">
+
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="#{request.contextPath}/Photos/logo.png" height="70" width="160" style="filter: brightness(0) invert(1);"/>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="border-color: rgba(255,255,255,0.3);">
+            <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <ul class="navbar-nav mx-auto text-center">
+                <li class="nav-item">
+                    <h:link value="Home" outcome="HomePage" styleClass="nav-link"/>
+                </li>
+                <li class="nav-item">
+                    <h:link value="Shoes" outcome="Shoes" styleClass="nav-link"/>
+                </li>
+                <li class="nav-item">
+                    <h:link value="About" outcome="AboutusPage" styleClass="nav-link"/>
+                </li>
+                <li class="nav-item">
+                    <h:link value="Contact" outcome="ContactUs" styleClass="nav-link"/>
+                </li>
+                <li class="nav-item">
+                    <h:link value="Blog" outcome="HomePage" styleClass="nav-link"/>
+                </li>
+            </ul>
+
+            <h:form class="d-flex gap-2 align-items-center">
+                <!-- Shown when NOT logged in -->
+                <h:panelGroup rendered="#{registerBeanCDI.current == null}" styleClass="d-flex gap-2">
+                    <h:commandLink value="Sign In" 
+                                   styleClass="btn btn-outline-dark-premium"
+                                   action="Login.xhtml"
+                                   style="text-decoration: none; display: flex; align-items: center;"/>
+                    <h:commandButton value="Sign Up" 
+                                     styleClass="btn btn-dark-premium"
+                                     action="Registration.xhtml"/>
+                </h:panelGroup>
+
+                <!-- Shown when LOGGED in -->
+                <h:panelGroup rendered="#{registerBeanCDI.current != null}" styleClass="d-flex gap-3 align-items-center">
+                    <div class="user-greet">
+                        <i class="bi bi-person-circle fs-5"></i>
+                        <span>Hello, <span class="user-name">#{registerBeanCDI.current.name}</span></span>
+                    </div>
+
+                    <h:link outcome="PurchaseHistory" styleClass="btn-cart me-2" style="background-color: rgba(255,255,255,0.1);">
+                        <i class="bi bi-clock-history fs-5"></i> Orders
+                    </h:link>
+
+                    <h:link outcome="Cart" styleClass="btn-cart">
+                        <i class="bi bi-bag-check fs-5"></i> Cart (#{shoeBeanCDI.cartCount})
+                    </h:link>
+
+                    <h:commandButton value="Logout" 
+                                     styleClass="btn btn-outline-danger btn-sm px-3"
+                                     action="#{registerBeanCDI.logout()}"/>
+                </h:panelGroup>
+            </h:form>
+
+        </div>
+
+    </nav>
+
+    <div class="history-container">
+        <h2 class="mb-4 fw-bold">Your Orders</h2>
+
+        <h:form id="historyForm">
+            <h:panelGroup rendered="#{empty purchaseHistoryBeanCDI.userOrders}">
+                <div class="empty-state">
+                    <i class="bi bi-bag-x"></i>
+                    <h4>No orders found</h4>
+                    <p class="text-muted">Looks like you haven't placed any orders yet.</p>
+                    <a href="HomePage.xhtml" class="btn btn-dark mt-3">Start Shopping</a>
+                </div>
+            </h:panelGroup>
+
+            <ui:repeat value="#{purchaseHistoryBeanCDI.userOrders}" var="order">
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <div class="info-block">
+                                <span>Order Placed</span>
+                                <strong>
+                                    <h:outputText value="#{order.orderdate}">
+                                        <f:convertDateTime pattern="dd MMM yyyy" />
+                                    </h:outputText>
+                                </strong>
+                            </div>
+                            <div class="info-block">
+                                <span>Total</span>
+                                <strong>Rs. #{order.totalamount}</strong>
+                            </div>
+                            <div class="info-block">
+                                <span>Order ID</span>
+                                <strong>##{order.orderid}</strong>
+                            </div>
+                        </div>
+                        <div class="order-status status-#{order.orderstatus.toLowerCase()}">
+                            #{order.orderstatus}
+                        </div>
+                    </div>
+
+                    <div class="order-body">
+                        <ui:repeat value="#{purchaseHistoryBeanCDI.getOrderDetails(order.orderid)}" var="detail">
+                            <ui:param name="shoe" value="#{purchaseHistoryBeanCDI.getShoe(detail.shoeid)}" />
+                            <div class="item-row">
+                                <img src="#{request.contextPath}/Photos/#{shoe.imageUrl}" alt="#{shoe.shoeName}" class="item-img" />
+                                <div class="item-details">
+                                    <div class="item-title">#{shoe.shoeName}</div>
+                                    <div class="item-meta">
+                                        Qty: #{detail.quantity} | Price: Rs. #{detail.price}
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <h:panelGroup rendered="#{!purchaseHistoryBeanCDI.hasReviewed(detail.shoeid)}">
+                                        <h:commandLink action="#{purchaseHistoryBeanCDI.prepareReview(detail.shoeid)}" 
+                                                       value="Write a Product Review" 
+                                                       styleClass="btn-rate">
+                                            <f:passThroughAttribute name="data-bs-toggle" value="modal" />
+                                            <f:passThroughAttribute name="data-bs-target" value="#reviewModal" />
+                                            <f:ajax render="reviewForm" />
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{purchaseHistoryBeanCDI.hasReviewed(detail.shoeid)}">
+                                        <div class="reviewed-badge">
+                                            <i class="bi bi-star-fill"></i> You reviewed this
+                                        </div>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </div>
+            </ui:repeat>
+        </h:form>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="reviewModalLabel">Rate Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h:form id="reviewForm">
+                        <h:inputHidden value="#{purchaseHistoryBeanCDI.selectedShoeId}" />
+                        
+                        <div class="mb-3 text-center">
+                            <label class="form-label fw-bold d-block">Overall rating</label>
+                            <!-- Custom Radio Buttons for Stars -->
+                            <div class="rating-stars">
+                                <input type="radio" id="star5" name="rating" value="5" />
+                                <label for="star5"><i class="bi bi-star-fill"></i></label>
+                                
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4"><i class="bi bi-star-fill"></i></label>
+                                
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3"><i class="bi bi-star-fill"></i></label>
+                                
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2"><i class="bi bi-star-fill"></i></label>
+                                
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1"><i class="bi bi-star-fill"></i></label>
+                            </div>
+                            <!-- Bind the selected value -->
+                            <h:inputHidden id="actualRating" value="#{purchaseHistoryBeanCDI.selectedRating}" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Add a written review</label>
+                            <h:inputTextarea value="#{purchaseHistoryBeanCDI.reviewComment}" 
+                                             styleClass="form-control" 
+                                             rows="4" 
+                                             pt:placeholder="What did you like or dislike? What did you use this product for?"
+                                             xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"/>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <h:commandButton value="Submit Review" 
+                                           action="#{purchaseHistoryBeanCDI.submitReview}" 
+                                           styleClass="btn btn-dark rounded-pill py-2 fw-bold" />
+                        </div>
+                        
+                        <script>
+                            // Script to sync stars with JSF hidden input
+                            document.querySelectorAll('.rating-stars input').forEach(radio => {
+                                radio.addEventListener('change', function() {
+                                    document.getElementById('reviewForm:actualRating').value = this.value;
+                                });
+                            });
+                        </script>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</h:body>
+</html>
