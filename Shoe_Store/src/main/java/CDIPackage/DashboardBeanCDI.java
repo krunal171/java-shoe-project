@@ -7,6 +7,9 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+
+// ==================================
+
 @Named(value = "dashboardBeanCDI")
 @RequestScoped
 public class DashboardBeanCDI {

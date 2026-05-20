@@ -6,6 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+// ===================
+
 @Named(value = "checkoutBeanCDI")
 @SessionScoped
 public class CheckoutBeanCDI implements Serializable {
